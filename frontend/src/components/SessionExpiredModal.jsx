@@ -1,4 +1,8 @@
 import {
+  useNavigate,
+} from "react-router";
+
+import {
   useSessionStore,
 } from "../store/sessionStore";
 
@@ -6,13 +10,46 @@ function SessionExpiredModal({
   open,
 }) {
 
+  const navigate =
+    useNavigate();
+
   const {
     setSessionExpired,
   } = useSessionStore();
 
   if (!open) {
+
     return null;
   }
+
+  const handleLoginAgain =
+    () => {
+
+      // RESET MODAL
+      setSessionExpired(
+        false
+      );
+
+      // REMOVE TOKEN
+      localStorage.removeItem(
+        "token"
+      );
+
+      // REMOVE SESSION
+      localStorage.removeItem(
+        "sessionExpiry"
+      );
+
+      // RESET MONTH
+      localStorage.removeItem(
+        "selectedDate"
+      );
+
+      // REACT ROUTER NAVIGATION
+      navigate(
+        "/login"
+      );
+    };
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
@@ -35,7 +72,8 @@ function SessionExpiredModal({
         {/* MESSAGE */}
         <p className="text-slate-500 text-center mt-3 leading-relaxed">
 
-          Your login session has expired.
+          Your login session
+          has expired.
 
           Please login again
           to continue using
@@ -44,32 +82,10 @@ function SessionExpiredModal({
 
         {/* BUTTON */}
         <button
-          onClick={() => {
+          onClick={
+            handleLoginAgain
+          }
 
-  // RESET MODAL
-  setSessionExpired(
-    false
-  );
-
-  // REMOVE TOKEN
-  localStorage.removeItem(
-    "token"
-  );
-  
-  // REMOVE SESSION
-localStorage.removeItem(
-  "sessionExpiry"
-);
-
-  // RESET MONTH
-  localStorage.removeItem(
-    "selectedDate"
-  );
-
-  // REDIRECT
-  window.location.href =
-    "/login";
-}}
           className="mt-7 w-full py-3 rounded-2xl font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-lg"
         >
           Login Again
