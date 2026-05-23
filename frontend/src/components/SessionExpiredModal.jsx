@@ -21,35 +21,29 @@ function SessionExpiredModal({
 
     return null;
   }
+const handleLoginAgain =
+  () => {
 
-  const handleLoginAgain =
-    () => {
+    setSessionExpired(
+      false
+    );
 
-      // RESET MODAL
-      setSessionExpired(
-        false
-      );
+    localStorage.removeItem(
+      "token"
+    );
 
-      // REMOVE TOKEN
-      localStorage.removeItem(
-        "token"
-      );
+    localStorage.removeItem(
+      "sessionExpiry"
+    );
 
-      // REMOVE SESSION
-      localStorage.removeItem(
-        "sessionExpiry"
-      );
+    localStorage.removeItem(
+      "selectedDate"
+    );
 
-      // RESET MONTH
-      localStorage.removeItem(
-        "selectedDate"
-      );
-
-      // REACT ROUTER NAVIGATION
-      navigate(
-        "/login"
-      );
-    };
+    window.location.replace(
+      "/login"
+    );
+  };
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
