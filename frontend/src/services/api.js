@@ -7,7 +7,7 @@ import {
 const api = axios.create({
 
   baseURL:
-    "https://expensetracker-9yc3.onrender.com/api",
+    "http://localhost:4000/api",
 
   withCredentials:
     true,

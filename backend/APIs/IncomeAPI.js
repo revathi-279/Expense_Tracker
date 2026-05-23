@@ -50,8 +50,8 @@ incomeApp.get("/readIncome", verifyToken, async (req, res) => {
         req.query.month
       );
 
-    // EXACT MONTH
-    const exactIncome =
+    // EXACT MONTH ONLY
+    const income =
       await incomeModel.findOne({
         userId:
           req.user.id,
@@ -59,46 +59,16 @@ incomeApp.get("/readIncome", verifyToken, async (req, res) => {
         month,
       });
 
-    // IF EXISTS
-    if (exactIncome) {
-
-      return res.json({
-        message:
-          "Income",
-
-        payload:
-          exactIncome,
-
-        inherited:
-          false,
-      });
-    }
-
-    // FALLBACK
-    const inheritedIncome =
-      await incomeModel
-        .findOne({
-          userId:
-            req.user.id,
-
-          month: {
-            $lt: month,
-          },
-        })
-        .sort({
-          month: -1,
-        });
-
     res.json({
 
       message:
         "Income",
 
       payload:
-        inheritedIncome,
+        income,
 
       inherited:
-        true,
+        false,
     });
 
   } catch (err) {

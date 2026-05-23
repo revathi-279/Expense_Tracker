@@ -160,7 +160,7 @@ function ExpenseFormModal({
         ) {
 
           setApiError(
-            "Please add income first"
+            "Please add income for this month"
           );
 
           return;
@@ -348,7 +348,7 @@ function ExpenseFormModal({
                           )
                         ) {
 
-                          return "Only whole numbers are allowed";
+                          return "Amount must be greater than 0";
                         }
 
                         const parsed =

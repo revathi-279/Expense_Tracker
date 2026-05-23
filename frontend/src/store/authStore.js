@@ -70,10 +70,11 @@ export const useAuth =
           201
         ) {
 
-          // SESSION EXPIRY
+          // SESSION EXPIRY (2 HOURS)
           const expiryTime =
             Date.now() +
             2 *
+              60 *
               60 *
               1000;
 
@@ -171,10 +172,11 @@ export const useAuth =
           200
         ) {
 
-          // SESSION EXPIRY
+          // SESSION EXPIRY (2 HOURS)
           const expiryTime =
             Date.now() +
             2 *
+              60 *
               60 *
               1000;
 

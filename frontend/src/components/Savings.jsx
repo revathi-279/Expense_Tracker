@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import api from "../services/api";
 
 import {
@@ -28,12 +29,16 @@ import {
   alertSuccess,
 } from "../styles/common";
 
-import { useMonthStore } from "../store/monthStore";
+import {
+  useMonthStore,
+} from "../store/monthStore";
 
 function Savings() {
 
-  const [chartData, setChartData] =
-    useState([]);
+  const [
+    chartData,
+    setChartData,
+  ] = useState([]);
 
   const {
     selectedDate,
@@ -45,8 +50,10 @@ function Savings() {
     setSelectedSavings,
   ] = useState(null);
 
-  const [goal, setGoal] =
-    useState(null);
+  const [
+    goal,
+    setGoal,
+  ] = useState(null);
 
   const [
     savingsAlert,
@@ -58,8 +65,10 @@ function Savings() {
     setShowGoalModal,
   ] = useState(false);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
   const fetchSavingsData =
     async () => {
@@ -74,14 +83,19 @@ function Savings() {
           ).getFullYear();
 
         const months =
-          getYearMonths(year);
+          getYearMonths(
+            year
+          );
 
         const monthlyResponses =
           await Promise.all(
+
             months.map(
               (month) =>
+
                 api.get(
                   "/saving-api/get-savings",
+
                   {
                     params: {
                       month:
@@ -94,10 +108,12 @@ function Savings() {
 
         const monthlyData =
           monthlyResponses.map(
+
             (
               res,
               index
             ) => ({
+
               month:
                 months[index]
                   .label,
@@ -105,6 +121,7 @@ function Savings() {
               totalSavings:
                 res.data.payload
                   ?.totalSavings ||
+
                 0,
             })
           );
@@ -122,6 +139,7 @@ function Savings() {
         const selectedSavingsRes =
           await api.get(
             "/saving-api/get-savings",
+
             {
               params: {
                 month:
@@ -133,6 +151,7 @@ function Savings() {
         const goalRes =
           await api.get(
             "/saving-api/goal",
+
             {
               params: {
                 month:
@@ -144,6 +163,7 @@ function Savings() {
         const alertRes =
           await api.get(
             "/alert-api/savingsAlert",
+
             {
               params: {
                 month:
@@ -232,12 +252,15 @@ function Savings() {
                 7
               )
             }
+
             goal={goal}
+
             onClose={() =>
               setShowGoalModal(
                 false
               )
             }
+
             onGoalChanged={
               fetchSavingsData
             }
@@ -282,9 +305,11 @@ function Savings() {
 
                 <input
                   type="date"
+
                   value={
                     selectedDate
                   }
+
                   onChange={(
                     e
                   ) =>
@@ -293,6 +318,7 @@ function Savings() {
                         .value
                     )
                   }
+
                   className={`${inputClass} min-w-[200px]`}
                 />
               </div>
@@ -300,11 +326,13 @@ function Savings() {
               {/* BUTTON */}
               <button
                 type="button"
+
                 onClick={() =>
                   setShowGoalModal(
                     true
                   )
                 }
+
                 className={`${primaryBtn} h-[48px] px-5`}
               >
                 Savings Goal
@@ -335,8 +363,7 @@ function Savings() {
             </div>
 
             <p className="text-xs text-slate-400">
-              Total monthly
-              earnings
+              Total monthly earnings
             </p>
           </div>
 
@@ -359,8 +386,7 @@ function Savings() {
             </div>
 
             <p className="text-xs text-slate-400">
-              Current month
-              spending
+              Current month spending
             </p>
           </div>
 
@@ -377,8 +403,7 @@ function Savings() {
 
                 <h2
                   className={`text-4xl font-bold ${
-                    totalSavings >=
-                    0
+                    totalSavings >= 0
                       ? "text-green-600"
                       : "text-red-500"
                   }`}
@@ -390,8 +415,7 @@ function Savings() {
             </div>
 
             <p className="text-xs text-slate-400">
-              Remaining monthly
-              balance
+              Remaining monthly balance
             </p>
           </div>
         </div>
@@ -437,40 +461,64 @@ function Savings() {
         {/* ALERT */}
         {savingsAlert && (
 
-          <div
-            className={
-              savingsAlert.message?.includes(
-                "violated"
-              )
-                ? alertDanger
-                : alertSuccess
-            }
-          >
+          Number(
+            savingsAlert.goal || 0
+          ) > 0 ? (
 
-            <p className="font-semibold">
-              {
-                savingsAlert.message
+            <div
+              className={
+                savingsAlert.message?.includes(
+                  "violated"
+                )
+
+                  ? alertDanger
+
+                  : alertSuccess
               }
-            </p>
+            >
 
-            <p className="text-sm mt-1">
-              Savings: Rs.
-              {" "}
-              {
-                savingsAlert.savings ||
-                0
-              }
+              <p className="font-semibold">
+                {
+                  savingsAlert.message
+                }
+              </p>
 
-              {" | "}
+              <p className="text-sm mt-1">
 
-              Goal: Rs.
-              {" "}
-              {
-                savingsAlert.goal ||
-                0
-              }
-            </p>
-          </div>
+                Savings: Rs.
+                {" "}
+
+                {
+                  savingsAlert.savings ||
+                  0
+                }
+
+                {" | "}
+
+                Goal: Rs.
+                {" "}
+
+                {
+                  savingsAlert.goal ||
+                  0
+                }
+              </p>
+            </div>
+
+          ) : (
+
+            <div className="bg-slate-100 border border-slate-200 rounded-3xl p-5 shadow-sm">
+
+              <p className="text-slate-600 font-semibold">
+                No Savings Goal
+              </p>
+
+              <p className="text-slate-500 text-sm mt-1">
+                No savings goal added
+                for this month
+              </p>
+            </div>
+          )
         )}
       </div>
     </div>
@@ -508,6 +556,7 @@ function getYearMonths(
 
   return Array.from(
     { length: 12 },
+
     (_, index) => {
 
       const month =
@@ -526,14 +575,17 @@ function getYearMonths(
         );
 
       return {
+
         value:
           `${year}-${month}`,
 
         label:
           date.toLocaleString(
             "default",
+
             {
-              month: "short",
+              month:
+                "short",
             }
           ),
       };

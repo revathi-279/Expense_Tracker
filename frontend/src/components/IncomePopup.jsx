@@ -1,6 +1,10 @@
 import { useForm } from "react-hook-form";
-import axios from "axios";
+
 import api from "../services/api";
+
+import {
+  useMonthStore,
+} from "../store/monthStore";
 
 import {
   glassCard,
@@ -19,9 +23,18 @@ function IncomePopup({
 }) {
 
   const {
+    selectedDate,
+  } = useMonthStore();
+
+  const selectedMonth =
+    selectedDate.slice(0, 7);
+
+  const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {
+      errors,
+    },
   } = useForm();
 
   const addIncome =
@@ -36,7 +49,9 @@ function IncomePopup({
 
         const res =
           await api.post(
+
             `/income-api/addIncome`,
+
             {
               income:
                 parsedIncome,
@@ -44,11 +59,10 @@ function IncomePopup({
               incomeDate:
                 new Date(),
 
-              month: `${new Date().getFullYear()}-${String(
-                new Date().getMonth() +
-                  1
-              ).padStart(2, "0")}`,
+              month:
+                selectedMonth,
             },
+
             {
               withCredentials:
                 true,
@@ -81,13 +95,18 @@ function IncomePopup({
         <div className="mb-6">
 
           <h2 className="text-2xl font-bold text-slate-800">
-             Add Income
+            Add Income
           </h2>
 
           <p className="text-slate-500 text-sm mt-1">
             Add your monthly
             income to manage
             savings and expenses
+          </p>
+
+          <p className="text-cyan-600 text-sm font-medium mt-2">
+            Adding income for{" "}
+            {selectedMonth}
           </p>
         </div>
 
@@ -111,63 +130,67 @@ function IncomePopup({
               inputMode="numeric"
               placeholder="Enter income amount"
               className={inputClass}
+
               {...register(
                 "income",
+
                 {
                   required:
                     "Income is required",
 
-                  validate: (
-                    value
-                  ) => {
+                  validate:
+                    (
+                      value
+                    ) => {
 
-                    const trimmed =
-                      value.trim();
+                      const trimmed =
+                        value.trim();
 
-                    if (
-                      trimmed.length ===
-                      0
-                    ) {
+                      if (
+                        trimmed.length ===
+                        0
+                      ) {
 
-                      return "Income is required";
-                    }
+                        return "Income is required";
+                      }
 
-                    if (
-                      !/^[0-9]+$/.test(
-                        trimmed
-                      )
-                    ) {
+                      if (
+                        !/^[0-9]+$/.test(
+                          trimmed
+                        )
+                      ) {
 
-                      return "Only whole numbers are allowed";
-                    }
+                        return "Only whole numbers are allowed";
+                      }
 
-                    const parsed =
-                      parseInt(
-                        trimmed
-                      );
+                      const parsed =
+                        parseInt(
+                          trimmed
+                        );
 
-                    if (
-                      parsed <= 0
-                    ) {
+                      if (
+                        parsed <= 0
+                      ) {
 
-                      return "Income must be greater than 0";
-                    }
+                        return "Income must be greater than 0";
+                      }
 
-                    if (
-                      parsed >
-                      MAX_INCOME
-                    ) {
+                      if (
+                        parsed >
+                        MAX_INCOME
+                      ) {
 
-                      return "Income exceeds maximum limit (100 Cr)";
-                    }
+                        return "Income exceeds maximum limit (100 Cr)";
+                      }
 
-                    return true;
-                  },
+                      return true;
+                    },
                 }
               )}
             />
 
             {errors.income && (
+
               <p
                 className={`${errorClass} mt-2`}
               >

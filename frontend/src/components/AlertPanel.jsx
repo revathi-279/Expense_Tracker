@@ -35,6 +35,9 @@ function AlertPanel({
       savingsAlert?.goal || 0
     ) > 0;
 
+  const noSavingsGoal =
+    !hasSavingsGoal;
+
   const savingsHealthy =
     hasSavingsGoal &&
     !savingsViolated;
@@ -68,6 +71,33 @@ function AlertPanel({
                 No budget limits
                 added for any
                 category
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* NO SAVINGS GOAL */}
+      {noSavingsGoal && (
+
+        <div className="bg-slate-100 border border-slate-200 rounded-3xl p-5 shadow-sm">
+
+          <div className="flex items-center justify-between">
+
+            <div>
+
+              <p
+                className={`${mutedText} font-semibold text-sm`}
+              >
+                No Savings Goal
+              </p>
+
+              <p
+                className={`${mutedText} text-sm mt-1`}
+              >
+                No savings goal
+                added for this
+                month
               </p>
             </div>
           </div>
@@ -112,7 +142,7 @@ function AlertPanel({
 
                   Exceeded by ₹
                   {Number(
-                    alert.exceededt ||
+                    alert.exceeded ||
                       0
                   ).toLocaleString(
                     "en-IN"
@@ -211,7 +241,9 @@ function AlertPanel({
 
       {/* HEALTHY STATE */}
       {!hasAnyAlerts &&
-        !noBudgets && (
+        !noBudgets &&
+
+        !noSavingsGoal && (
 
           <div
             className={alertSuccessCard}
