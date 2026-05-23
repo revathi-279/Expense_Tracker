@@ -70,7 +70,7 @@ export const useAuth =
           201
         ) {
 
-          // SESSION EXPIRY (2 HOURS)
+          // SESSION EXPIRY
           const expiryTime =
             Date.now() +
             2 *
@@ -81,6 +81,15 @@ export const useAuth =
           localStorage.setItem(
             "sessionExpiry",
             expiryTime
+          );
+
+          // RESET TO CURRENT DATE
+          localStorage.setItem(
+            "selectedDate",
+
+            new Date()
+              .toISOString()
+              .split("T")[0]
           );
 
           set({
@@ -172,7 +181,7 @@ export const useAuth =
           200
         ) {
 
-          // SESSION EXPIRY (2 HOURS)
+          // SESSION EXPIRY
           const expiryTime =
             Date.now() +
             2 *
@@ -183,6 +192,15 @@ export const useAuth =
           localStorage.setItem(
             "sessionExpiry",
             expiryTime
+          );
+
+          // RESET TO CURRENT DATE
+          localStorage.setItem(
+            "selectedDate",
+
+            new Date()
+              .toISOString()
+              .split("T")[0]
           );
 
           set({
@@ -259,6 +277,10 @@ export const useAuth =
 
           localStorage.removeItem(
             "sessionExpiry"
+          );
+
+          localStorage.removeItem(
+            "selectedDate"
           );
 
           set({
