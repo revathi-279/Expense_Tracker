@@ -44,21 +44,69 @@ incomeApp.post("/addIncome", verifyToken, async (req, res) => {
 
 incomeApp.get("/readIncome", verifyToken, async (req, res) => {
   try {
-    const month = normalizeMonth(req.query.month);
 
-    const income = await incomeModel
-      .findOne({
-        userId: req.user.id,
-        month: { $lte: month },
-      })
-      .sort({ month: -1 });
+    const month =
+      normalizeMonth(
+        req.query.month
+      );
+
+    // EXACT MONTH
+    const exactIncome =
+      await incomeModel.findOne({
+        userId:
+          req.user.id,
+
+        month,
+      });
+
+    // IF EXISTS
+    if (exactIncome) {
+
+      return res.json({
+        message:
+          "Income",
+
+        payload:
+          exactIncome,
+
+        inherited:
+          false,
+      });
+    }
+
+    // FALLBACK
+    const inheritedIncome =
+      await incomeModel
+        .findOne({
+          userId:
+            req.user.id,
+
+          month: {
+            $lt: month,
+          },
+        })
+        .sort({
+          month: -1,
+        });
 
     res.json({
-      message: "Income",
-      payload: income,
+
+      message:
+        "Income",
+
+      payload:
+        inheritedIncome,
+
+      inherited:
+        true,
     });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    res.status(500).json({
+      message:
+        err.message,
+    });
   }
 });
 

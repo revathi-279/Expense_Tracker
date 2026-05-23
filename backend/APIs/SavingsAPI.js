@@ -40,20 +40,15 @@ savingsApp.get("/get-savings", verifyToken, async (req, res) => {
       1
     );
 
-  const incomeDoc =
-  await incomeModel
-    .findOne({
-      userId:
-        req.user.id,
+const incomeDoc =
+  await incomeModel.findOne({
 
-      month: {
-        $lte:
-          monthKey,
-      },
-    })
-    .sort({
-      month: -1,
-    });
+    userId:
+      req.user.id,
+
+    month:
+      monthKey,
+  });
 
     const expenses = await expenseModel.find({
       userId: req.user.id,
