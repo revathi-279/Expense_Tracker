@@ -1,5 +1,18 @@
 import { create } from "zustand";
+
 import api from "../services/api";
+
+import {
+  useMonthStore,
+} from "./monthStore";
+
+const getCurrentDate =
+  () => {
+
+    return new Date()
+      .toISOString()
+      .split("T")[0];
+  };
 
 export const useAuth =
   create((set) => ({
@@ -83,14 +96,15 @@ export const useAuth =
             expiryTime
           );
 
-          // RESET TO CURRENT DATE
-          localStorage.setItem(
-            "selectedDate",
+          // RESET CURRENT DATE
+          const currentDate =
+            getCurrentDate();
 
-            new Date()
-              .toISOString()
-              .split("T")[0]
-          );
+          useMonthStore
+            .getState()
+            .setSelectedDate(
+              currentDate
+            );
 
           set({
 
@@ -194,14 +208,15 @@ export const useAuth =
             expiryTime
           );
 
-          // RESET TO CURRENT DATE
-          localStorage.setItem(
-            "selectedDate",
+          // RESET CURRENT DATE
+          const currentDate =
+            getCurrentDate();
 
-            new Date()
-              .toISOString()
-              .split("T")[0]
-          );
+          useMonthStore
+            .getState()
+            .setSelectedDate(
+              currentDate
+            );
 
           set({
 
@@ -282,6 +297,13 @@ export const useAuth =
           localStorage.removeItem(
             "selectedDate"
           );
+
+          // RESET TO CURRENT MONTH
+          useMonthStore
+            .getState()
+            .setSelectedDate(
+              getCurrentDate()
+            );
 
           set({
 

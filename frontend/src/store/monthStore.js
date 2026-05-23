@@ -1,409 +1,52 @@
-import { create } from "zustand";
+import { create }
+from "zustand";
 
-import api from "../services/api";
+const getCurrentDate =
+  () => {
 
-import {
-  useMonthStore,
-} from "./monthStore";
+    return new Date()
+      .toISOString()
+      .split("T")[0];
+  };
 
-export const useAuth =
+export const useMonthStore =
   create((set) => ({
 
-    currentUser: null,
+    selectedDate:
+      localStorage.getItem(
+        "selectedDate"
+      ) ||
 
-    loading: false,
+      getCurrentDate(),
 
-    isAuthenticated: false,
+    setSelectedDate:
+      (date) => {
 
-    error: null,
-
-    isNewUser: false,
-
-    // =====================================================
-    // REGISTER
-    // =====================================================
-
-    register: async (
-      userObj
-    ) => {
-
-      try {
+        localStorage.setItem(
+          "selectedDate",
+          date
+        );
 
         set({
-
-          loading: true,
-
-          currentUser:
-            null,
-
-          isAuthenticated:
-            false,
-
-          error: null,
-
-          isNewUser:
-            false,
+          selectedDate:
+            date,
         });
+      },
 
-        const res =
-          await api.post(
+    resetToCurrentMonth:
+      () => {
 
-            "/user-api/users",
+        const currentDate =
+          getCurrentDate();
 
-            {
-              Name:
-                userObj.Name,
-
-              Mob_num:
-                userObj.Mob_num,
-
-              email:
-                userObj.email,
-
-              password:
-                userObj.password,
-            },
-
-            {
-              withCredentials:
-                true,
-            }
-          );
-
-        if (
-          res.status ===
-          201
-        ) {
-
-          // SESSION EXPIRY
-          const expiryTime =
-            Date.now() +
-            2 *
-              60 *
-              60 *
-              1000;
-
-          localStorage.setItem(
-            "sessionExpiry",
-            expiryTime
-          );
-
-          // RESET CURRENT DATE
-          const currentDate =
-            new Date()
-              .toISOString()
-              .split("T")[0];
-
-          localStorage.setItem(
-            "selectedDate",
-            currentDate
-          );
-
-          useMonthStore
-            .getState()
-            .setSelectedDate(
-              currentDate
-            );
-
-          set({
-
-            currentUser:
-              res.data.payload,
-
-            loading:
-              false,
-
-            isAuthenticated:
-              true,
-
-            error: null,
-
-            isNewUser:
-              res.data
-                .isNewUser,
-          });
-
-          return res.data;
-        }
-
-      } catch (err) {
+        localStorage.setItem(
+          "selectedDate",
+          currentDate
+        );
 
         set({
-
-          loading:
-            false,
-
-          isAuthenticated:
-            false,
-
-          currentUser:
-            null,
-
-          error:
-            err.response
-              ?.data
-              ?.message ||
-            "Registration failed",
+          selectedDate:
+            currentDate,
         });
-
-        throw err;
-      }
-    },
-
-    // =====================================================
-    // LOGIN
-    // =====================================================
-
-    login: async (
-      userCred
-    ) => {
-
-      try {
-
-        set({
-
-          loading: true,
-
-          currentUser:
-            null,
-
-          isAuthenticated:
-            false,
-
-          error: null,
-
-          isNewUser:
-            false,
-        });
-
-        const res =
-          await api.post(
-
-            "/user-api/login",
-
-            userCred,
-
-            {
-              withCredentials:
-                true,
-            }
-          );
-
-        if (
-          res.status ===
-          200
-        ) {
-
-          // SESSION EXPIRY
-          const expiryTime =
-            Date.now() +
-            2 *
-              60 *
-              60 *
-              1000;
-
-          localStorage.setItem(
-            "sessionExpiry",
-            expiryTime
-          );
-
-          // RESET CURRENT DATE
-          const currentDate =
-            new Date()
-              .toISOString()
-              .split("T")[0];
-
-          localStorage.setItem(
-            "selectedDate",
-            currentDate
-          );
-
-          useMonthStore
-            .getState()
-            .setSelectedDate(
-              currentDate
-            );
-
-          set({
-
-            currentUser:
-              res.data.payload,
-
-            loading:
-              false,
-
-            isAuthenticated:
-              true,
-
-            error: null,
-
-            isNewUser:
-              false,
-          });
-
-          return res.data;
-        }
-
-      } catch (err) {
-
-        set({
-
-          loading:
-            false,
-
-          isAuthenticated:
-            false,
-
-          currentUser:
-            null,
-
-          error:
-            err.response
-              ?.data
-              ?.message ||
-            "Login failed",
-        });
-
-        throw err;
-      }
-    },
-
-    // =====================================================
-    // LOGOUT
-    // =====================================================
-
-    logout: async () => {
-
-      try {
-
-        set({
-          loading: true,
-        });
-
-        const res =
-          await api.get(
-
-            "/user-api/logout",
-
-            {
-              withCredentials:
-                true,
-            }
-          );
-
-        if (
-          res.status ===
-          200
-        ) {
-
-          localStorage.removeItem(
-            "sessionExpiry"
-          );
-
-          localStorage.removeItem(
-            "selectedDate"
-          );
-
-          // RESET MONTH STORE
-          useMonthStore
-            .getState()
-            .setSelectedDate(
-
-              new Date()
-                .toISOString()
-                .split("T")[0]
-            );
-
-          set({
-
-            currentUser:
-              null,
-
-            isAuthenticated:
-              false,
-
-            error: null,
-
-            loading:
-              false,
-
-            isNewUser:
-              false,
-          });
-        }
-
-      } catch (err) {
-
-        set({
-
-          loading:
-            false,
-
-          isAuthenticated:
-            false,
-
-          currentUser:
-            null,
-
-          error:
-            err.response
-              ?.data
-              ?.message ||
-            "Logout failed",
-        });
-      }
-    },
-
-    // =====================================================
-    // CHECK AUTH
-    // =====================================================
-
-    checkAuth: async () => {
-
-      try {
-
-        set({
-          loading: true,
-        });
-
-        const res =
-          await api.get(
-
-            "/user-api/user",
-
-            {
-              withCredentials:
-                true,
-            }
-          );
-
-        set({
-
-          currentUser:
-            res.data.payload,
-
-          isAuthenticated:
-            true,
-
-          loading:
-            false,
-
-          error: null,
-        });
-
-      } catch (err) {
-
-        set({
-
-          currentUser:
-            null,
-
-          isAuthenticated:
-            false,
-
-          loading:
-            false,
-        });
-      }
-    },
+      },
   }));
