@@ -1,17 +1,10 @@
 import {
-  useNavigate,
-} from "react-router";
-
-import {
   useSessionStore,
 } from "../store/sessionStore";
 
 function SessionExpiredModal({
   open,
 }) {
-
-  const navigate =
-    useNavigate();
 
   const {
     setSessionExpired,
@@ -21,29 +14,30 @@ function SessionExpiredModal({
 
     return null;
   }
-const handleLoginAgain =
-  () => {
 
-    setSessionExpired(
-      false
-    );
+  const handleLoginAgain =
+    () => {
 
-    localStorage.removeItem(
-      "token"
-    );
+      setSessionExpired(
+        false
+      );
 
-    localStorage.removeItem(
-      "sessionExpiry"
-    );
+      localStorage.removeItem(
+        "token"
+      );
 
-    localStorage.removeItem(
-      "selectedDate"
-    );
+      localStorage.removeItem(
+        "sessionExpiry"
+      );
 
-    window.location.replace(
-      "/login"
-    );
-  };
+      localStorage.removeItem(
+        "selectedDate"
+      );
+
+      window.location.replace(
+        "/login"
+      );
+    };
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
