@@ -1,7 +1,7 @@
 import {
   NavLink,
   useNavigate,
-} from "react-router";
+} from "react-router-dom";
 
 import {
   navbarClass,

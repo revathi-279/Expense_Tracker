@@ -15,7 +15,7 @@ import {
 import {
   NavLink,
   useNavigate,
-} from "react-router";
+} from "react-router-dom";
 
 import {
   useAuth,

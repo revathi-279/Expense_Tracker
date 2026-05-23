@@ -5,7 +5,7 @@ import {
 import {
   createBrowserRouter,
   RouterProvider,
-} from "react-router";
+} from "react-router-dom";
 
 import RootLayout from "./components/RootLayout";
 
